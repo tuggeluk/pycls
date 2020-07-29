@@ -30,7 +30,6 @@ for folder in subfolders:
         val_size = round(len(samples)*val_portion)
         val_samples = random.sample(samples, val_size)
         for val_sample in val_samples:
-            print("move bitch")
             shutil.move(train_dir+"/"+val_sample, val_dir+"/"+val_sample)
 
 
