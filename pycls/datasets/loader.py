@@ -18,13 +18,13 @@ from torch.utils.data.sampler import RandomSampler
 
 
 # Supported datasets
-_DATASETS = {"cifar10": Cifar10, "imagenet": ImageNet, "imagenet_5": ImageNet}
+_DATASETS = {"cifar10": Cifar10, "imagenet": ImageNet, "imagenet_5": ImageNet,  "imagenet_10": ImageNet}
 
 # Default data directory (/path/pycls/pycls/datasets/data)
 _DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 
 # Relative data paths to default data directory
-_PATHS = {"cifar10": "cifar10", "imagenet": "imagenet", "imagenet_5": "imagenet_5"}
+_PATHS = {"cifar10": "cifar10", "imagenet": "imagenet", "imagenet_10": "imagenet_10", "imagenet_5": "imagenet_5"}
 
 
 def _construct_loader(dataset_name, split, batch_size, shuffle, drop_last):
