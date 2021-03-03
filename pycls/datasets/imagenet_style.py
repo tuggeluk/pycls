@@ -26,15 +26,36 @@ logger = logging.get_logger(__name__)
 class ImageNetStyle(torch.utils.data.Dataset):
     """ImageNet-Style dataset."""
 
-    def __init__(self, name, statistics, data_path, split, preprocessing, shared_mem):
+    def __init__(self, name, statistics, data_path, split):
         assert os.path.exists(data_path), "Data path '{}' not found".format(data_path)
         splits = ["train", "val"]
         assert split in splits, "Split '{}' not supported for ImageNet-Style".format(split)
         logger.info("Constructing {} {}...".format(name, split))
         self.name = name.lower()
         self._MEAN, self._SD, self._EIG_VALS, self._EIG_VECS = statistics
-        self._AREA_FRAC, self._JITTER_SD = preprocessing
-        self.shared_mem = shared_mem
+
+        if split == "train":
+            self._USED_CONFIG = "TRAIN"
+        else:
+            self._USED_CONFIG = "TEST"
+
+        if "SHARED_MEM" in cfg[self._USED_CONFIG].keys():
+            self.shared_mem = cfg[self._USED_CONFIG].SHARED_MEM
+        else:
+            self.shared_mem = False
+
+        if "ROTATE" in cfg[self._USED_CONFIG].keys():
+            self.rotate = cfg[self._USED_CONFIG].ROTATE
+        else:
+            self.rotate = False
+
+        if "MASK_CORNERS" in cfg[self._USED_CONFIG].keys():
+            self.mask = cfg[self._USED_CONFIG].MASK_CORNERS
+        else:
+            self.mask = False
+
+        self.LocalProcRandGen = np.random.RandomState()
+
         self._data_path, self._split = data_path, split
         self.path_name = self._data_path.split("/")[-1]
         self._construct_imdb()
@@ -69,29 +90,31 @@ class ImageNetStyle(torch.utils.data.Dataset):
 
     def _prepare_im(self, im):
         """Prepares the image for network input."""
-
+        im = im[:, :, ::-1].astype(np.float32) / 255
         # Train and test setups differ
-        train_size = cfg.TRAIN.IM_SIZE
+        train_size, test_size = cfg.TRAIN.IM_SIZE, cfg.TEST.IM_SIZE
         if self._split == "train":
-            # Scale and aspect ratio then horizontal flip
-
-            # im = im[0:train_size, 0:train_size]
-            #im = cv2.resize(im, (train_size, train_size), interpolation=cv2.INTER_NEAREST)
-            im = transforms.random_sized_crop(im=im, size=train_size, area_frac=self._AREA_FRAC, max_iter=10)
-            im = transforms.horizontal_flip(im=im, p=0.5, order="HWC")
+            # For training use random_sized_crop, horizontal_flip, augment, lighting
+            im = transforms.random_sized_crop(im, train_size)
+            im = transforms.horizontal_flip(im, prob=0.5)
+            im = transforms.augment(im, cfg.TRAIN.AUGMENT)
+            im = transforms.lighting(im, cfg.TRAIN.PCA_STD, self._EIG_VALS, self._EIG_VECS)
         else:
             # Scale and center crop
-            im = transforms.scale(cfg.TEST.IM_SIZE, im)
-            im = transforms.center_crop(train_size, im)
-        # HWC -> CHW
-        im = im.transpose([2, 0, 1])
-        # [0, 255] -> [0, 1]
-        im = im / 255.0
-        # PCA jitter
-        if self._split == "train":
-            im = transforms.lighting(im, self._JITTER_SD, self._EIG_VALS, self._EIG_VECS)
-        # Color normalization
+            im = transforms.scale_and_center_crop(im, cfg.TEST.IM_SIZE, train_size)
+
+        if self.rotate:
+            im = transforms.rotate_image(im)
+
+        if self.mask:
+            im = transforms.mask_corners(im)
+
+        # from PIL import Image
+        # Image.fromarray(((im / np.max(im)) * 255).astype(np.uint8)).show
+        # For training and testing use color normalization
         im = transforms.color_norm(im, self._MEAN, self._SD)
+        # Convert HWC/RGB/float to CHW/BGR/float format
+        im = np.ascontiguousarray(im[:, :, ::-1].transpose([2, 0, 1]))
         return im
 
     def __getitem__(self, index):

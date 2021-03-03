@@ -13,7 +13,8 @@ import cv2
 import numpy as np
 from PIL import Image
 from pycls.datasets.augment import make_augment
-
+from scipy import ndimage, misc
+import torch
 
 def scale_and_center_crop(im, scale_size, crop_size):
     """Performs scaling and center cropping (used for testing)."""
@@ -77,4 +78,20 @@ def color_norm(im, mean, std):
     """Performs per-channel normalization (used for training and testing)."""
     for i in range(3):
         im[:, :, i] = (im[:, :, i] - mean[i]) / std[i]
+    return im
+
+
+def rotate_image(im):
+    angle = int(torch.randint(low=0, high=259, size=(1, 1)))
+    im = ndimage.rotate(im, angle, reshape=False)
+
+    return im
+
+def mask_corners(im):
+    x = np.arange(0, im.shape[0], 1) - np.floor(im.shape[0]/2)
+    y = np.arange(0, im.shape[1], 1) - np.floor(im.shape[1]/2)
+    xx, yy = np.meshgrid(x, y)
+    mask = (np.sqrt((xx*xx)+(yy*yy))-im.shape[0]/2) > 0
+    im[mask] = 0
+
     return im
