@@ -20,6 +20,7 @@ import pycls.datasets.loader as data_loader
 import torch
 import torch.cuda.amp as amp
 from pycls.core.config import cfg
+import wandb
 
 
 logger = logging.get_logger(__name__)
@@ -121,6 +122,8 @@ def train_model():
     env.setup_env()
     # Construct the model, loss_fun, and optimizer
     model = setup_model()
+    if not isinstance(wandb.config, wandb.util.PreInitObject):
+        wandb.watch(model)
     loss_fun = builders.build_loss_fun().cuda()
     optimizer = optim.construct_optimizer(model)
     # Load checkpoint or initial weights

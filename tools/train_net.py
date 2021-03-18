@@ -12,8 +12,14 @@ import pycls.core.distributed as dist
 import pycls.core.trainer as trainer
 from pycls.core.config import cfg
 
+import wandb
+from datetime import datetime
 
 def main():
+    now = datetime.now()
+    run_name = now.strftime("%d-%m-%Y_%H:%M:%S")
+    wandb.init(project="imagenet_rotation", name=run_name, reinit=True)
+
     config.load_cfg_fom_args("Train a classification model.")
     config.assert_and_infer_cfg()
     # cfg.TRAIN.ROTATE = False
