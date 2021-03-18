@@ -15,14 +15,15 @@ from iopath.common.file_io import g_pathmgr
 from pycls.core.io import cache_url
 from yacs.config import CfgNode as CfgNode
 
+new_allowed = True
 
 # Global config object (example usage: from core.config import cfg)
-_C = CfgNode()
+_C = CfgNode(new_allowed=new_allowed)
 cfg = _C
 
 
 # ---------------------------------- Model options ----------------------------------- #
-_C.MODEL = CfgNode()
+_C.MODEL = CfgNode(new_allowed=new_allowed)
 
 # Model type
 _C.MODEL.TYPE = ""
@@ -44,7 +45,7 @@ _C.MODEL.ACTIVATION_INPLACE = True
 
 
 # ---------------------------------- ResNet options ---------------------------------- #
-_C.RESNET = CfgNode()
+_C.RESNET = CfgNode(new_allowed=new_allowed)
 
 # Transformation function (see pycls/models/resnet.py for options)
 _C.RESNET.TRANS_FUN = "basic_transform"
@@ -60,7 +61,7 @@ _C.RESNET.STRIDE_1X1 = True
 
 
 # ---------------------------------- AnyNet options ---------------------------------- #
-_C.ANYNET = CfgNode()
+_C.ANYNET = CfgNode(new_allowed=new_allowed)
 
 # Stem type
 _C.ANYNET.STEM_TYPE = "simple_stem_in"
@@ -94,7 +95,7 @@ _C.ANYNET.SE_R = 0.25
 
 
 # ---------------------------------- RegNet options ---------------------------------- #
-_C.REGNET = CfgNode()
+_C.REGNET = CfgNode(new_allowed=new_allowed)
 
 # Stem type
 _C.REGNET.STEM_TYPE = "simple_stem_in"
@@ -132,7 +133,7 @@ _C.REGNET.BOT_MUL = 1.0
 
 
 # ------------------------------- EfficientNet options ------------------------------- #
-_C.EN = CfgNode()
+_C.EN = CfgNode(new_allowed=new_allowed)
 
 # Stem width
 _C.EN.STEM_W = 32
@@ -166,7 +167,7 @@ _C.EN.DROPOUT_RATIO = 0.0
 
 
 # -------------------------------- Batch norm options -------------------------------- #
-_C.BN = CfgNode()
+_C.BN = CfgNode(new_allowed=new_allowed)
 
 # BN epsilon
 _C.BN.EPS = 1e-5
@@ -187,7 +188,7 @@ _C.BN.CUSTOM_WEIGHT_DECAY = 0.0
 
 
 # -------------------------------- Optimizer options --------------------------------- #
-_C.OPTIM = CfgNode()
+_C.OPTIM = CfgNode(new_allowed=new_allowed)
 
 # Learning rate ranges from BASE_LR to MIN_LR*BASE_LR according to the LR_POLICY
 _C.OPTIM.BASE_LR = 0.1
@@ -225,7 +226,7 @@ _C.OPTIM.WARMUP_EPOCHS = 0
 
 
 # --------------------------------- Training options --------------------------------- #
-_C.TRAIN = CfgNode()
+_C.TRAIN = CfgNode(new_allowed=new_allowed)
 
 # Dataset and split
 _C.TRAIN.DATASET = ""
@@ -260,7 +261,7 @@ _C.TRAIN.AUGMENT = ""
 
 
 # --------------------------------- Testing options ---------------------------------- #
-_C.TEST = CfgNode()
+_C.TEST = CfgNode(new_allowed=new_allowed)
 
 # Dataset and split
 _C.TEST.DATASET = ""
@@ -277,7 +278,7 @@ _C.TEST.WEIGHTS = ""
 
 
 # ------------------------------- Data loader options -------------------------------- #
-_C.DATA_LOADER = CfgNode()
+_C.DATA_LOADER = CfgNode(new_allowed=new_allowed)
 
 # Number of data loader workers per process
 _C.DATA_LOADER.NUM_WORKERS = 8
@@ -287,14 +288,14 @@ _C.DATA_LOADER.PIN_MEMORY = True
 
 
 # ---------------------------------- CUDNN options ----------------------------------- #
-_C.CUDNN = CfgNode()
+_C.CUDNN = CfgNode(new_allowed=new_allowed)
 
 # Perform benchmarking to select fastest CUDNN algorithms (best for fixed input sizes)
 _C.CUDNN.BENCHMARK = True
 
 
 # ------------------------------- Precise time options ------------------------------- #
-_C.PREC_TIME = CfgNode()
+_C.PREC_TIME = CfgNode(new_allowed=new_allowed)
 
 # Number of iterations to warm up the caches
 _C.PREC_TIME.WARMUP_ITER = 3

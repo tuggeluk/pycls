@@ -20,9 +20,16 @@ TRAIN:
   DATASET: imagenet_10
   IM_SIZE: 224
   BATCH_SIZE: 1
+  ROTATE: TRUE
+  MASK_CORNERS: True
+  WEIGHTS: pretrained/X-50-32x4d_dds_8gpu.pyth
+  SHARED_MEM: False
 TEST:
   DATASET: imagenet_10
   IM_SIZE: 256
   BATCH_SIZE: 1
+  ROTATE: TRUE
+  MASK_CORNERS: True
 NUM_GPUS: 1
 OUT_DIR: outdir/test
+
