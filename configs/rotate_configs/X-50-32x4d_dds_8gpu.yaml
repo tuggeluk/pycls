@@ -1,6 +1,6 @@
 MODEL:
   TYPE: anynet
-  NUM_CLASSES: 10
+  NUM_CLASSES: 1000
 ANYNET:
   STEM_TYPE: res_stem_in
   STEM_W: 64
@@ -17,18 +17,18 @@ OPTIM:
   MOMENTUM: 0.9
   WEIGHT_DECAY: 5e-5
 TRAIN:
-  DATASET: imagenet_10
+  DATASET: imagenet
   IM_SIZE: 224
   BATCH_SIZE: 1
-  ROTATE: TRUE
+  ROTATE: True
   MASK_CORNERS: True
   WEIGHTS: pretrained/X-50-32x4d_dds_8gpu.pyth
   SHARED_MEM: False
 TEST:
-  DATASET: imagenet_10
+  DATASET: imagenet
   IM_SIZE: 256
   BATCH_SIZE: 1
-  ROTATE: TRUE
+  ROTATE: True
   MASK_CORNERS: True
 NUM_GPUS: 1
 OUT_DIR: outdir/test

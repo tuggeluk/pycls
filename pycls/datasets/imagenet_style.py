@@ -110,7 +110,7 @@ class ImageNetStyle(torch.utils.data.Dataset):
             im = transforms.mask_corners(im)
 
         # from PIL import Image
-        # Image.fromarray(((im / np.max(im)) * 255).astype(np.uint8)).show
+        # Image.fromarray(((im / np.max(im)) * 255).astype(np.uint8)).show()
         # For training and testing use color normalization
         im = transforms.color_norm(im, self._MEAN, self._SD)
         # Convert HWC/RGB/float to CHW/BGR/float format

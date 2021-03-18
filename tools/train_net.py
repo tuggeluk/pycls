@@ -16,11 +16,11 @@ from pycls.core.config import cfg
 def main():
     config.load_cfg_fom_args("Train a classification model.")
     config.assert_and_infer_cfg()
-    cfg.TRAIN.ROTATE = False
-    cfg.TRAIN.MASK_CORNERS = True
-    #cfg.TRAIN.SHARED_MEM = True
-    cfg.TEST.ROTATE = True
-    cfg.TEST.MASK_CORNERS = True
+    # cfg.TRAIN.ROTATE = False
+    # cfg.TRAIN.MASK_CORNERS = True
+    # #cfg.TRAIN.SHARED_MEM = True
+    # cfg.TEST.ROTATE = True
+    # cfg.TEST.MASK_CORNERS = True
     cfg.freeze()
     dist.multi_proc_run(num_proc=cfg.NUM_GPUS, fun=trainer.train_model)
 
